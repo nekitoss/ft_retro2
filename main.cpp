@@ -5,11 +5,23 @@
 int main(void)
 {
 	int ch;
-	nodelay(stdscr, TRUE);
+	bool exit_requested = false;
+
+
+
+	initscr();
+	start_color();
+	init_pair(1, COLOR_WHITE, COLOR_BLACK);
+	init_pair(2, COLOR_GREEN, COLOR_BLACK);
+	init_pair(3, COLOR_YELLOW, COLOR_BLACK);
+	init_pair(4, COLOR_RED, COLOR_BLACK);
+	init_pair(5, COLOR_BLUE, COLOR_BLACK);
+	curs_set(0);
+	//getmaxyx()
+	keypad(stdscr, true);// enable function keys
+	nodelay(stdscr, true);// disable input blocking
 	noecho();
 	timeout(0); // wtimeout(stdscr, 0);
-	curs_set(0);
-	bool exit_requested = false;
 
 
 
