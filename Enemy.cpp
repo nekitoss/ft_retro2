@@ -24,6 +24,7 @@ Enemy::~Enemy() {
 void Enemy::shoot() {
 	this->bullet.setX(this->_posX - 1);
 	this->bullet.setY(this->_posY);
+	this->bullet.setSpeed(0.5f);
 }
 
 Enemy & Enemy::operator=(Enemy const &rhs) {
