@@ -2,9 +2,10 @@
 #include <ncurses.h>
 #include "Ship.hpp"
 #include "Enemy.hpp"
+#include <time.h>
 #include <ctime>
 
-#define NUM 10
+#define NUM 15
 #define ENEMY_COLOR 1
 #define PLAYER_COLOR_1 2
 #define PLAYER_COLOR_2 3
@@ -13,16 +14,90 @@
 #define MIN_X 40
 #define MIN_Y 50
 
+void enemy_block (Ship &Player1, Enemy *enemy, int maxX, int maxY, bool flag) {
+	for (int i = 0; i < NUM; i++) {
+		if (enemy[i].getX() == Player1.getX()
+			&& (enemy[i].getY() == Player1.getY()
+				|| enemy[i].getY() == Player1.getY() + 1
+				|| enemy[i].getY() == Player1.getY() + 2)) {
+			Player1.damage();
+			enemy[i].setX(maxX - 1 + (rand() % 100));
+			enemy[i].setY(rand() % (maxY - 4) + 1);
+		}
+		if (Player1.getLives() <= 0)
+			Player1.setType("X");
+
+		if (enemy[i].getX() == Player1.bullet.getX() && enemy[i].getY() == Player1.bullet.getY()) {
+			Player1.kill();
+			mvprintw(enemy[i].getY(), enemy[i].getX(), "X");
+			enemy[i].setX(maxX - 1 + (rand() % 100));
+			enemy[i].setY(rand() % (maxY - 4) + 1);
+			Player1.bullet.setX(500);
+		} else {
+			mvprintw(enemy[i].getY() - 1, enemy[i].getX(), "/");
+			mvprintw(enemy[i].getY(), enemy[i].getX(), "<K");
+			mvprintw(enemy[i].getY() + 1, enemy[i].getX(), "\\");
+			if (flag) {
+				enemy[i].moveLeft();
+				enemy[i].travel();
+				flag = false;
+			}
+		}
+	}
+}
+
+bool input(Ship &Player1, int ch) {
+	switch (ch) {
+		case 27:
+		case 'q': //exit
+			return true;
+
+		case KEY_UP: //move up
+		case 'w':
+		case 'i':
+			Player1.moveUp();
+			break;
+
+		case KEY_DOWN: //move down
+		case 's':
+		case 'k':
+			Player1.moveDown();
+			break;
+
+		case KEY_LEFT: //move left
+		case 'a':
+		case 'j':
+			Player1.moveLeft();
+			break;
+
+		case KEY_RIGHT: //move right
+		case 'd':
+		case 'l':
+			Player1.moveRight();
+			break;
+
+		case ' ': //fireeee
+
+			break;
+
+		default:
+			break;
+	}
+	return false;
+}
+
 int main(void)
 {
-
 	Ship Player1(1,1, "C");
-
+	bool flag = false;
+	float current;
   	Enemy enemy[NUM];
   	int ch;
  	bool exit_requested = false;
 	int maxX, maxY, newMaxX, newMaxY;
   	srand(time(nullptr));
+
+	clock_t timer;
 
   	initscr();
 	refresh();
@@ -59,6 +134,8 @@ int main(void)
 		enemy[i].setY((rand() % (maxY - 4)) + 1);
 		enemy[i].setSpeed(0.005f * (rand() % 8 + 1));
 	}
+	timer = clock();
+
 	while(!exit_requested) {
 		ch = getch();
 		erase();
@@ -69,54 +146,22 @@ int main(void)
 			std::cout << "Window resize is NOT allowed" << std::endl << "You were punished as game loose. You can run game again." << std::endl;
 			return (-1);
 		}
+//		time(&current_time);
+		current = static_cast<float>(clock() - timer)/CLOCKS_PER_SEC;
+
+		if (current > 0.5)
+		{
+			flag = true;
+			timer = clock();
+		}
+
 		//draw score
 		attron(A_BOLD | A_REVERSE | COLOR_PAIR(SCORE_COLOR));
-		//mvprintw(maxY - 1, maxX / 2 - 6, "SCORE: %d", Player1.getScore());
-		//mvprintw(maxY - 1, maxX / 2 - 26, "Lives: %d", Player1.getLives());
-		for (int k = 0; k < NUM; k++)
-		{
-			mvprintw(maxY - 1 - k, maxX / 2 - 26, "X: %4d; Y:%4d; Sp:%0.5f XM:%f", enemy[k].getX(), enemy[k].getY(), enemy[k].getSpeed(), enemy[k].getDist());
-		}
+		mvprintw(maxY - 1, maxX / 2 - 6, "SCORE: %d", Player1.getScore());
+		mvprintw(maxY - 1, maxX / 2 - 26, "Lives: %d", Player1.getLives());
 
 		attroff(A_BOLD | A_REVERSE | COLOR_PAIR(SCORE_COLOR));
-
-		switch (ch) {
-			case 27:
-			case 'q': //exit
-				exit_requested = true;
-				break;
-
-			case KEY_UP: //move up
-			case 'w':
-			case 'i':
-				Player1.moveUp();
-				break;
-
-			case KEY_DOWN: //move down
-			case 's':
-			case 'k':
-				Player1.moveDown();
-				break;
-
-			case KEY_LEFT: //move left
-			case 'a':
-			case 'j':
-				Player1.moveLeft();
-				break;
-
-			case KEY_RIGHT: //move right
-			case 'd':
-			case 'l':
-				Player1.moveRight();
-				break;
-
-			case ' ': //fireeee
-	
-				break;
-
-			default:
-				break;
-		}
+		exit_requested = input(Player1, ch);
 		Player1.shoot();
 		//draw player & bullets
 		attron(A_BOLD | COLOR_PAIR(PLAYER_COLOR_1));
@@ -135,32 +180,9 @@ int main(void)
 
 		//draw enemy
 		attron(A_BOLD | COLOR_PAIR(ENEMY_COLOR));
-		for (int i = 0; i < NUM; i++) {
-			if (enemy[i].getX() == Player1.getX() 
-					&& (enemy[i].getY() == Player1.getY()
-					|| enemy[i].getY() == Player1.getY() + 1
-					|| enemy[i].getY() == Player1.getY() + 2)) {
-				Player1.damage();
-				enemy[i].setX(maxX - 1 + (rand() % 100));
-				enemy[i].setY(rand() % (maxY - 4) + 1);
-			}
-			if (Player1.getLives() <= 0)
-				Player1.setType("X");
 
-			if (enemy[i].getX() == Player1.bullet.getX() && enemy[i].getY() == Player1.bullet.getY()) {
-				Player1.kill();
-				mvprintw(enemy[i].getY(), enemy[i].getX(), "X");
-				enemy[i].setX(maxX - 1 + (rand() % 100));
-				enemy[i].setY(rand() % (maxY - 4) + 1);
-				Player1.bullet.setX(500);
-			} else {
-				mvprintw(enemy[i].getY() - 1, enemy[i].getX(), "/");
-				mvprintw(enemy[i].getY(), enemy[i].getX(), "<K");
-				mvprintw(enemy[i].getY() + 1, enemy[i].getX(), "\\");
-				enemy[i].moveLeft();
-				enemy[i].travel();
-			}
-		}
+		enemy_block(Player1, enemy, maxX, maxY, flag);
+
 		attroff(A_BOLD | COLOR_PAIR(ENEMY_COLOR));
 		if (exit_requested)
 			break;
