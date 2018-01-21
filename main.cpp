@@ -4,7 +4,7 @@
 #include "Enemy.hpp"
 #include <ctime>
 
-#define NUM 3
+#define NUM 15
 int main(void)
 {
 	srand(time(nullptr));
@@ -80,9 +80,14 @@ int main(void)
 				break;
 		}
 
-		mvprintw(Player1.getY(), Player1.getX(), "C");
+		mvprintw(Player1.getY(), Player1.getX(), &Player1.getType()[0]);
 		for (int i = 0; i < NUM; i++)
 		{
+			if (enemy[i].getX() == Player1.getX() && enemy[i].getY() == Player1.getY()) {
+				Player1.damage();
+				if (Player1.getLives() <= 0)
+					Player1.setType("X");
+			}
 			if (enemy[i].getX() == Player1.bullet.getX() && enemy[i].getY() == Player1.bullet.getY()) {
 				mvprintw(enemy[i].getY(), enemy[i].getX(), "X");
 				enemy[i].setX(249 + (rand() %100));

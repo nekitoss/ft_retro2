@@ -10,6 +10,8 @@ public:
 	Ship(Ship const &src);
 	~Ship();
 
+	int getLives();
+	void damage();
 	Ship &operator=(Ship const &rhs);
 	Bullet bullet;
 	void shoot();
