@@ -21,6 +21,11 @@ Enemy::~Enemy() {
 
 }
 
+void Enemy::shoot() {
+	this->bullet.setX(this->_posX - 1);
+	this->bullet.setY(this->_posY);
+}
+
 Enemy & Enemy::operator=(Enemy const &rhs) {
 	this->_posX = rhs.getX();
 	this->_posY = rhs.getY();
