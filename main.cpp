@@ -1,13 +1,21 @@
 #include <iostream>
 #include <ncurses.h>
 #include "Ship.hpp"
+#include "Enemy.hpp"
+#include <ctime>
 
+#define NUM 3
 int main(void)
 {
-
-	Ship Player1(1,1, "P");
-
-
+	srand(time(nullptr));
+	Ship Player1(1,1, "C");
+	Enemy enemy[NUM];
+	for (int i = 0; i < NUM; i++)
+	{
+		enemy[i].setX(249 + (rand() %100));
+		enemy[i].setY(rand() % 66);
+		enemy[i].setSpeed(0.005 * (rand() % 8 + 1));
+	}
 	int ch;
 	bool exit_requested = false;
 
@@ -27,19 +35,10 @@ int main(void)
 	noecho();
 	timeout(0); // wtimeout(stdscr, 0);
 
-
-
-
-
-
-
-
 	while(!exit_requested)
 	{
-		clear();
 		ch = getch();
-
-
+		clear();
 		
 
 		switch (ch)
@@ -74,14 +73,35 @@ int main(void)
 				break;
 
 			case ' ': //fireeee
+				Player1.shoot();
 				break;
 
 			default:
 				break;
 		}
 
-		mvprintw(Player1.getY(), Player1.getX(), "P");
+		mvprintw(Player1.getY(), Player1.getX(), "C");
+		for (int i = 0; i < NUM; i++)
+		{
+			if (enemy[i].getX() == Player1.bullet.getX() && enemy[i].getY() == Player1.bullet.getY()) {
+				mvprintw(enemy[i].getY(), enemy[i].getX(), "X");
+				enemy[i].setX(249 + (rand() %100));
+				enemy[i].setY(rand() % 66);
+				Player1.bullet.setX(250);
+			}
+			else {
+				mvprintw(enemy[i].getY(), enemy[i].getX(), "<");
+				enemy[i].moveLeft();
+				enemy[i].travel();
+			}
 
+		}
+		if (Player1.bullet.getX() > 0 && Player1.bullet.getX() < 250)
+		{
+			Player1.bullet.moveRight();
+			Player1.bullet.travel();
+		}
+		mvprintw(Player1.bullet.getY(), Player1.bullet.getX(), "*");
 		if (exit_requested) break ;
 
 		refresh();

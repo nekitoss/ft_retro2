@@ -15,12 +15,15 @@ public:
 	int getY() const;
 	float getSpeed() const;
 	std::string getType() const;
+	float getDist() const;
 	void moveUp();
 	void moveDown();
 	void moveLeft();
 	void moveRight();
+	void travel();
 	Entity &operator=(Entity const &rhs);
 protected:
+	float _dist;
 	int _posX;
 	int _posY;
 	std::string _type;

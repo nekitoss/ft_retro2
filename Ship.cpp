@@ -4,6 +4,8 @@
 Ship::Ship() {
 	this->_alive = true;
 	this->_lives = 3;
+	this->bullet.setSpeed(0.15f);
+	this->bullet.setX(250);
 }
 
 Ship::Ship(int x, int y, std::string type) {
@@ -12,6 +14,8 @@ Ship::Ship(int x, int y, std::string type) {
 	this->_type = type;
 	this->_alive = true;
 	this->_lives = 3;
+	this->bullet.setX(250);
+	this->bullet.setSpeed(0.15f);
 }
 
 Ship::Ship(Ship const &src) {
@@ -23,9 +27,11 @@ Ship::~Ship() {
 }
 
 void Ship::shoot() {
-	this->bullet.setX(this->_posX + 1);
-	this->bullet.setY(this->_posY);
-	this->bullet.setSpeed(1.f);
+	if (this->bullet.getX() == 250)
+	{
+		this->bullet.setX(this->_posX + 1);
+		this->bullet.setY(this->_posY);
+	}
 }
 
  Ship &Ship::operator=(Ship const &rhs) {

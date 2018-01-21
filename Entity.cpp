@@ -24,13 +24,36 @@ void Entity::setSpeed(float f) { this->_speed = f; }
 int Entity::getX() const { return this->_posX; };
 int Entity::getY() const { return this->_posY; };
 float Entity::getSpeed() const { return this->_speed; }
+float Entity::getDist() const { return this->_dist; }
 std::string Entity::getType() const { return this->_type; };
 
-void Entity::moveUp() { this->_posY++; }
-void Entity::moveDown() { this->_posY--; }
-void Entity::moveLeft() { this->_posX--; }
-void Entity::moveRight() { this->_posX++; }
+void Entity::moveUp() {
+	if (this->_posY > 0)
+		this->_posY--;
+}
 
+void Entity::moveDown() {
+	if (this->_posY < 65)
+		this->_posY++;
+
+}
+
+void Entity::moveLeft() {
+	if (this->_posX > 0)
+		this->_posX--;
+}
+
+void Entity::moveRight() {
+	if (this->_posX < 248)
+		this->_posX++;
+}
+
+void Entity::travel() {
+	if (this->_dist > 1)
+		this->_dist -= 1;
+	this->_dist += this->_speed;
+
+}
 Entity & Entity::operator=(Entity const &rhs) {
 	this->_posX = rhs.getX();
 	this->_posY = rhs.getY();

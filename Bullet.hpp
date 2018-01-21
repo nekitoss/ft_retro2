@@ -10,5 +10,7 @@ public:
 	Bullet(Bullet const &src);
 	~Bullet();
 
+	void moveLeft();
+	void moveRight();
 	Bullet &operator=(Bullet const &rhs);
 };
