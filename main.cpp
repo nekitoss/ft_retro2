@@ -25,7 +25,7 @@ int main(void)
 	keypad(stdscr, true);// enable function keys
 	nodelay(stdscr, true);// disable input blocking
 	noecho();
-	timeout(0); // wtimeout(stdscr, 0);
+	timeout(1); // wtimeout(stdscr, 0);
 
 
 
@@ -36,7 +36,7 @@ int main(void)
 
 	while(!exit_requested)
 	{
-		clear();
+		erase();
 		ch = getch();
 
 
