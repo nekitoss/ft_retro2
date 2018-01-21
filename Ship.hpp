@@ -11,7 +11,9 @@ public:
 	~Ship();
 
 	int getLives();
+	int getScore();
 	void damage();
+	void kill();
 	Ship &operator=(Ship const &rhs);
 	Bullet bullet;
 	void shoot();
@@ -19,4 +21,5 @@ protected:
 	int _hp;
 private:
 	int _lives;
+	int _score;
 };
