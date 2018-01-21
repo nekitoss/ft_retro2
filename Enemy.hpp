@@ -14,7 +14,6 @@ public:
 	Bullet bullet;
 	void shoot();
 	void moveLeft();
-	void moveRight();
 	Enemy &operator=(Enemy const &rhs);
 protected:
 };

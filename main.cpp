@@ -4,7 +4,7 @@
 #include "Enemy.hpp"
 #include <ctime>
 
-#define NUM 15
+#define NUM 10
 #define ENEMY_COLOR 1
 #define PLAYER_COLOR_1 2
 #define PLAYER_COLOR_2 3
@@ -13,7 +13,7 @@
 
 int main(void)
 {
-	Ship Player1(1,1, "C");
+	Ship Player1(1,1, "1");
   	Enemy enemy[NUM];
   	int ch;
  	bool exit_requested = false;
@@ -36,20 +36,30 @@ int main(void)
 	noecho();
 	timeout(0); // wtimeout(stdscr, 0);
 
+	Player1.setMaxX(maxX);
+	Player1.setMaxY(maxY);
+	Player1.bullet.setX(maxX);
 
 	for (int i = 0; i < NUM; i++)
 	{
+		enemy[i].setMaxX(maxX);
+		enemy[i].setMaxY(maxY);
 		enemy[i].setX(maxX - 1 + (rand() %100));
-		enemy[i].setY(rand() % maxY);
-		enemy[i].setSpeed(0.005 * (rand() % 8 + 1));
+		enemy[i].setY((rand() % (maxY - 4)) + 1);
+		enemy[i].setSpeed(0.005f * (rand() % 8 + 1));
 	}
-
 	while(!exit_requested) {
 		ch = getch();
 		erase();
 		//draw score
 		attron(A_BOLD | A_REVERSE | COLOR_PAIR(SCORE_COLOR));
-		mvprintw(maxY - 1, maxX / 2 - 6, "SCORE: %d", Player1.getScore());
+		//mvprintw(maxY - 1, maxX / 2 - 6, "SCORE: %d", Player1.getScore());
+		//mvprintw(maxY - 1, maxX / 2 - 26, "Lives: %d", Player1.getLives());
+		for (int k = 0; k < NUM; k++)
+		{
+			mvprintw(maxY - 1 - k, maxX / 2 - 26, "X: %4d; Y:%4d; Sp:%0.5f XM:%f", enemy[k].getX(), enemy[k].getY(), enemy[k].getSpeed(), enemy[k].getDist());
+		}
+
 		attroff(A_BOLD | A_REVERSE | COLOR_PAIR(SCORE_COLOR));
 
 		switch (ch) {
@@ -83,22 +93,21 @@ int main(void)
 				break;
 
 			case ' ': //fireeee
-
-				Player1.shoot();
+	
 				break;
 
 			default:
 				break;
 		}
-
+		Player1.shoot();
 		//draw player & bullets
 		attron(A_BOLD | COLOR_PAIR(PLAYER_COLOR_1));
 		mvprintw(Player1.getY(), Player1.getX(), "\\");
 		mvprintw(Player1.getY() + 1, Player1.getX(), &Player1.getType()[0]);
-		mvprintw(Player1.getY() + 1, Player1.getX() + 1, "O>");
+		printw( " >");
 		mvprintw(Player1.getY() + 2, Player1.getX(), "/");
 		attroff(A_REVERSE);
-		if (Player1.bullet.getX() > 0 && Player1.bullet.getX() < maxX) {
+		if (Player1.bullet.getX() > 0 && Player1.bullet.getX() < maxX + 10) {
 			Player1.bullet.moveRight();
 			Player1.bullet.travel();
 		}
@@ -109,12 +118,13 @@ int main(void)
 		//draw enemy
 		attron(A_BOLD | COLOR_PAIR(ENEMY_COLOR));
 		for (int i = 0; i < NUM; i++) {
-			if (enemy[i].getX() == Player1.getX() && (enemy[i].getY() == Player1.getY()
-													  || enemy[i].getY() == Player1.getY() + 1
-													  || enemy[i].getY() == Player1.getY() + 2)) {
+			if (enemy[i].getX() == Player1.getX() 
+					&& (enemy[i].getY() == Player1.getY()
+					|| enemy[i].getY() == Player1.getY() + 1
+					|| enemy[i].getY() == Player1.getY() + 2)) {
 				Player1.damage();
 				enemy[i].setX(maxX - 1 + (rand() % 100));
-				enemy[i].setY(rand() % maxY);
+				enemy[i].setY(rand() % (maxY - 4) + 1);
 			}
 			if (Player1.getLives() <= 0)
 				Player1.setType("X");
@@ -123,10 +133,12 @@ int main(void)
 				Player1.kill();
 				mvprintw(enemy[i].getY(), enemy[i].getX(), "X");
 				enemy[i].setX(maxX - 1 + (rand() % 100));
-				enemy[i].setY(rand() % maxY);
-				Player1.bullet.setX(maxX);
+				enemy[i].setY(rand() % (maxY - 4) + 1);
+				Player1.bullet.setX(500);
 			} else {
-				mvprintw(enemy[i].getY(), enemy[i].getX(), "<");
+				mvprintw(enemy[i].getY() - 1, enemy[i].getX(), "/");
+				mvprintw(enemy[i].getY(), enemy[i].getX(), "<K");
+				mvprintw(enemy[i].getY() + 1, enemy[i].getX(), "\\");
 				enemy[i].moveLeft();
 				enemy[i].travel();
 			}
