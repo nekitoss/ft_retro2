@@ -91,32 +91,37 @@ int main(void)
 				break;
 		}
 
-		attron(A_BOLD | A_REVERSE | COLOR_PAIR(PLAYER_COLOR_1));
-		mvprintw(Player1.getY(), Player1.getX(), "C");
-		attroff(A_BOLD | A_REVERSE | COLOR_PAIR(PLAYER_COLOR_1));
-
-    mvprintw(Player1.getY(), Player1.getX(), "C");
-		for (int i = 0; i < NUM; i++)
-		{
-			if (enemy[i].getX() == Player1.bullet.getX() && enemy[i].getY() == Player1.bullet.getY()) {
-				mvprintw(enemy[i].getY(), enemy[i].getX(), "X");
-				enemy[i].setX(249 + (rand() %100));
-				enemy[i].setY(rand() % 66);
-				Player1.bullet.setX(250);
+		{//draw player & bullets
+			attron(A_BOLD | A_REVERSE | COLOR_PAIR(PLAYER_COLOR_1));
+			mvprintw(Player1.getY(), Player1.getX(), "C");
+			attroff(A_REVERSE);
+			if (Player1.bullet.getX() > 0 && Player1.bullet.getX() < 250)
+			{
+				Player1.bullet.moveRight();
+				Player1.bullet.travel();
 			}
-			else {
-				mvprintw(enemy[i].getY(), enemy[i].getX(), "<");
-				enemy[i].moveLeft();
-				enemy[i].travel();
-			}
+			mvprintw(Player1.bullet.getY(), Player1.bullet.getX(), "*");
+			attroff(A_BOLD  | COLOR_PAIR(PLAYER_COLOR_1));
+		}
 
+		{//draw enemy
+			attron(A_BOLD | COLOR_PAIR(ENEMY_COLOR));
+			for (int i = 0; i < NUM; i++)
+			{
+				if (enemy[i].getX() == Player1.bullet.getX() && enemy[i].getY() == Player1.bullet.getY()) {
+					mvprintw(enemy[i].getY(), enemy[i].getX(), "X");
+					enemy[i].setX(249 + (rand() %100));
+					enemy[i].setY(rand() % 66);
+					Player1.bullet.setX(250);
+				}
+				else {
+					mvprintw(enemy[i].getY(), enemy[i].getX(), "<");
+					enemy[i].moveLeft();
+					enemy[i].travel();
+				}
+			}
+			attroff(A_BOLD | COLOR_PAIR(ENEMY_COLOR));
 		}
-		if (Player1.bullet.getX() > 0 && Player1.bullet.getX() < 250)
-		{
-			Player1.bullet.moveRight();
-			Player1.bullet.travel();
-		}
-		mvprintw(Player1.bullet.getY(), Player1.bullet.getX(), "*");
 
 		if (exit_requested) break ;
 
