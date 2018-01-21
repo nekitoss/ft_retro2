@@ -12,6 +12,8 @@ public:
 
 	int getLives();
 	int getScore();
+
+	void resetLives();
 	void damage();
 	void kill();
 	Ship &operator=(Ship const &rhs);

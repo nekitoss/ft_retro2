@@ -31,8 +31,10 @@ Ship::~Ship() {
 int Ship::getLives() { return this->_lives; }
 int Ship::getScore() { return this->_score; }
 
+void Ship::resetLives() { this->_lives = 3; }
 void Ship::damage() {
-	this->_lives--;
+	if (this->_lives > 1)
+		this->_lives--;
 }
 
 void Ship::kill() {
