@@ -10,14 +10,18 @@
 #define PLAYER_COLOR_2 3
 #define PLAYER_COLOR_3 4
 #define SCORE_COLOR 5
+#define MIN_X 40
+#define MIN_Y 50
 
 int main(void)
 {
+	// int num_of_players = 1;
+
 	Ship Player1(1,1, "C");
   	Enemy enemy[NUM];
   	int ch;
  	bool exit_requested = false;
-	int maxX, maxY;
+	int maxX, maxY, newMaxX, newMaxY;
   	srand(time(nullptr));
 
   	initscr();
@@ -31,6 +35,13 @@ int main(void)
 	curs_set(0);
 	getmaxyx(stdscr, maxY, maxX);
   
+	if (maxX < MIN_X || maxY < MIN_Y)
+	{
+		endwin();
+		std::cout << "Too small window!" << std::endl << "Minimun size is " << MIN_X << 'x' << MIN_Y << std::endl << "Resize window and run again" << std::endl;
+		return (-1);
+	}
+
 	keypad(stdscr, true);// enable function keys
 	nodelay(stdscr, true);// disable input blocking
 	noecho();
@@ -47,6 +58,13 @@ int main(void)
 	while(!exit_requested) {
 		ch = getch();
 		erase();
+		getmaxyx(stdscr, newMaxY, newMaxX);
+		if (newMaxX != maxX || newMaxY != maxY)
+		{
+			endwin();
+			std::cout << "Window resize is NOT allowed" << std::endl << "You were punished as game loose. You can run game again." << std::endl;
+			return (-1);
+		}
 		//draw score
 		attron(A_BOLD | A_REVERSE | COLOR_PAIR(SCORE_COLOR));
 		mvprintw(maxY - 1, maxX / 2 - 6, "SCORE: %d", Player1.getScore());
