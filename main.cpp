@@ -159,13 +159,13 @@ int main(void)
 
 
 		//draw score
-		attron(A_BOLD | A_REVERSE | COLOR_PAIR(SCORE_COLOR));
-		mvprintw(maxY - 1, maxX / 2 - 6, "SCORE: %d", Player1.getScore());
-		mvprintw(maxY - 1, maxX / 2 - 26, "Lives: %d", Player1.getLives());
-//		for (int k = 0; k < NUM; k++)
-//		{
-//			mvprintw(maxY - 1 - k, maxX / 2 - 26, "X: %4d; Y:%4d; Sp:%0.5f XM:%f", enemy[k].getX(), enemy[k].getY(), enemy[k].getSpeed(), enemy[k].getDist());
-//		}
+		// attron(A_BOLD | A_REVERSE | COLOR_PAIR(SCORE_COLOR));
+		// mvprintw(maxY - 1, maxX / 2 - 6, "SCORE: %d", Player1.getScore());
+		// mvprintw(maxY - 1, maxX / 2 - 26, "Lives: %d", Player1.getLives());
+		for (int k = 0; k < NUM; k++)
+		{
+			mvprintw(maxY - 1 - k, maxX / 2 - 26, "X: %4d; Y:%4d; Sp:%0.5f XM:%f", enemy[k].getX(), enemy[k].getY(), enemy[k].getSpeed(), enemy[k].getDist());
+		}
 
 		attroff(A_BOLD | A_REVERSE | COLOR_PAIR(SCORE_COLOR));
 		exit_requested = input(Player1, ch);
@@ -175,34 +175,61 @@ int main(void)
 			timer = clock();
 			Player1.shoot();
 		}
-		//draw player & bullets
-		attron(A_BOLD | COLOR_PAIR(PLAYER_COLOR_1));
-		mvprintw(Player1.getY(), Player1.getX(), "\\");
-		mvprintw(Player1.getY() + 1, Player1.getX(), &Player1.getType()[0]);
-		printw( " >");
-		mvprintw(Player1.getY() + 2, Player1.getX(), "/");
-		attroff(A_REVERSE);
-		if (Player1.bullet.getX() > 0 && Player1.bullet.getX() < maxX + 10) {
-			Player1.bullet.moveRight();
-			Player1.bullet.travel();
+
+		if (Player1.getLives())
+		{
+			//draw player & bullets
+			attron(A_BOLD | COLOR_PAIR(PLAYER_COLOR_1));
+			mvprintw(Player1.getY(), Player1.getX(), "\\");
+			mvprintw(Player1.getY() + 1, Player1.getX(), &Player1.getType()[0]);
+			printw( " >");
+			mvprintw(Player1.getY() + 2, Player1.getX(), "/");
+			attroff(A_REVERSE);
+			if (Player1.bullet.getX() > 0 && Player1.bullet.getX() < maxX + 10) {
+				Player1.bullet.moveRight();
+				Player1.bullet.travel();
+			}
+			mvprintw(Player1.bullet.getY(), Player1.bullet.getX(), "*");
+			attroff(A_BOLD | COLOR_PAIR(PLAYER_COLOR_1));
+
+
+			//draw enemy
+			attron(A_BOLD | COLOR_PAIR(ENEMY_COLOR));
+			enemy_block(Player1, enemy, maxX, maxY, flag);
+			attroff(A_BOLD | COLOR_PAIR(ENEMY_COLOR));
 		}
-		mvprintw(Player1.bullet.getY(), Player1.bullet.getX(), "*");
-		attroff(A_BOLD | COLOR_PAIR(PLAYER_COLOR_1));
-
-
-		//draw enemy
-		attron(A_BOLD | COLOR_PAIR(ENEMY_COLOR));
-
-		enemy_block(Player1, enemy, maxX, maxY, flag);
-
-		attroff(A_BOLD | COLOR_PAIR(ENEMY_COLOR));
+		else
+		{
+			ch = 0;
+			attron(A_BOLD | A_REVERSE |COLOR_PAIR(ENEMY_COLOR));
+			while (ch != 'q')
+			{
+				timeout(-1);
+				erase();
+				mvprintw(maxY/2, maxX/2, "GAME OVER!");
+				mvprintw(maxY/2+1, maxX/2, "Press R for retry or Q for exit");
+				ch = getch();
+				if (ch == 'r')
+				{
+					Player1.resetLives();
+					break ;
+				}
+				else if (ch == 'q')
+				{
+					exit_requested = true;	
+					break ;
+				}
+			}
+			timeout(0);
+			attroff(A_BOLD | A_REVERSE |COLOR_PAIR(ENEMY_COLOR));
+		}
 		if (exit_requested)
 			break;
 	}
-	refresh();
+		refresh();
 
-	timeout(-1);
-	getch();
+	// timeout(-1);
+	// getch();
 	//mvprintw(maxY/2, maxX/2, "GAME OVER!");
 	endwin(); /* End curses mode */
 
