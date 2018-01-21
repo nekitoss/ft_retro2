@@ -20,6 +20,7 @@ Entity::~Entity() {
 void Entity::setX(int n) { this->_posX = n; }
 void Entity::setY(int n) { this->_posY = n; }
 void Entity::setSpeed(float f) { this->_speed = f; }
+void Entity::setType(std::string type) { this->_type = type; }
 
 int Entity::getX() const { return this->_posX; };
 int Entity::getY() const { return this->_posY; };

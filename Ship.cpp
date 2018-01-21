@@ -26,6 +26,12 @@ Ship::~Ship() {
 
 }
 
+int Ship::getLives() { return this->_lives; }
+
+void Ship::damage() {
+	this->_lives--;
+}
+
 void Ship::shoot() {
 	if (this->bullet.getX() == 250)
 	{

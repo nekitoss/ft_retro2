@@ -11,6 +11,7 @@ public:
 	void setX(int n);
 	void setY(int n);
 	void setSpeed(float f);
+	void setType(std::string type);
 	int getX() const;
 	int getY() const;
 	float getSpeed() const;

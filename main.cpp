@@ -3,12 +3,14 @@
 #include "Ship.hpp"
 #include "Enemy.hpp"
 #include <ctime>
-#define NUM 3
+
+#define NUM 15
 #define ENEMY_COLOR 1
 #define PLAYER_COLOR_1 2
 #define PLAYER_COLOR_2 3
 #define PLAYER_COLOR_3 4
 #define SCORE_COLOR 5
+
 int main(void)
 {
   Ship Player1(1,1, "C");
@@ -91,9 +93,9 @@ int main(void)
 				break;
 		}
 
-		{//draw player & bullets
+    {//draw player & bullets
 			attron(A_BOLD | A_REVERSE | COLOR_PAIR(PLAYER_COLOR_1));
-			mvprintw(Player1.getY(), Player1.getX(), "C");
+			mvprintw(Player1.getY(), Player1.getX(), &Player1.getType()[0]);
 			attroff(A_REVERSE);
 			if (Player1.bullet.getX() > 0 && Player1.bullet.getX() < 250)
 			{
@@ -108,6 +110,11 @@ int main(void)
 			attron(A_BOLD | COLOR_PAIR(ENEMY_COLOR));
 			for (int i = 0; i < NUM; i++)
 			{
+        if (enemy[i].getX() == Player1.getX() && enemy[i].getY() == Player1.getY()) {
+          Player1.damage();
+          if (Player1.getLives() <= 0)
+            Player1.setType("X");
+        }
 				if (enemy[i].getX() == Player1.bullet.getX() && enemy[i].getY() == Player1.bullet.getY()) {
 					mvprintw(enemy[i].getY(), enemy[i].getX(), "X");
 					enemy[i].setX(249 + (rand() %100));
