@@ -1,6 +1,7 @@
 
 #pragma once
-#include "Asteroid.hpp"
+
+#include "Entity.hpp"
 
 class Bullet : public Entity {
 public:

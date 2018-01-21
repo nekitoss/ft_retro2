@@ -2,7 +2,7 @@
 #pragma once
 
 #include "Entity.hpp"
-#include "bullet.hpp"
+#include "Bullet.hpp"
 
 class Enemy : public Entity {
 public:

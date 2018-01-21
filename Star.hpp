@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "Enemy.hpp"
+#include "Entity.hpp"
 
 class Star : public Entity {
 	Star();

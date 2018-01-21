@@ -6,7 +6,7 @@ public:
 	Entity();
 	Entity(int x, int y, std::string &type);
 	Entity(Entity const &src);
-	~Entity();
+	virtual ~Entity();
 
 	void setX(int n);
 	void setY(int n);
