@@ -3,9 +3,10 @@
 
 Enemy::Enemy() {
 	this->_alive = true;
+	this->_speed = 0.01;
 }
 
-Enemy::Enemy(int x, int y, float speed, std::string &type) {
+Enemy::Enemy(int x, int y, float speed, std::string type) {
 	this->_posX = x;
 	this->_posY = y;
 	this->_type = type;
@@ -19,6 +20,21 @@ Enemy::Enemy(Enemy const &src) {
 
 Enemy::~Enemy() {
 
+}
+
+void Enemy::moveLeft() {
+	if (this->_posX < -10)
+	{
+		this->_posX = 250;
+		this->_posY = rand() % 66;
+	}
+	if (this->_dist >= 1)
+		this->_posX--;
+}
+
+void Enemy::moveRight() {
+	if (this->_dist >= 1)
+		this->_posX++;
 }
 
 void Enemy::shoot() {

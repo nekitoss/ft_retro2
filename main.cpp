@@ -1,25 +1,30 @@
 #include <iostream>
 #include <ncurses.h>
 #include "Ship.hpp"
-
+#include "Enemy.hpp"
+#include <ctime>
+#define NUM 3
 #define ENEMY_COLOR 1
 #define PLAYER_COLOR_1 2
 #define PLAYER_COLOR_2 3
 #define PLAYER_COLOR_3 4
 #define SCORE_COLOR 5
-
 int main(void)
 {
-
-	Ship Player1(1,1, "P1");
-
-
-	int ch;
-	bool exit_requested = false;
+  Ship Player1(1,1, "C");
+  int ch;
+  bool exit_requested = false;
 	int maxX, maxY;
-
+  srand(time(nullptr));
 	
-	initscr();
+	Enemy enemy[NUM];
+	for (int i = 0; i < NUM; i++)
+	{
+		enemy[i].setX(249 + (rand() %100));
+		enemy[i].setY(rand() % 66);
+		enemy[i].setSpeed(0.005 * (rand() % 8 + 1));
+	}
+  initscr();
 	refresh();
 	start_color();
 	init_pair(ENEMY_COLOR, COLOR_RED, COLOR_BLACK);
@@ -29,14 +34,11 @@ int main(void)
 	init_pair(SCORE_COLOR, COLOR_WHITE, COLOR_RED);
 	curs_set(0);
 	getmaxyx(stdscr, maxY, maxX);
+  
 	keypad(stdscr, true);// enable function keys
 	nodelay(stdscr, true);// disable input blocking
 	noecho();
 	timeout(0); // wtimeout(stdscr, 0);
-
-
-
-
 
 	while(!exit_requested)
 	{
@@ -47,6 +49,7 @@ int main(void)
 			mvprintw(maxY - 1, maxX / 2 - 6, "SCORE: %d", 4399);
 			attroff(A_BOLD | A_REVERSE | COLOR_PAIR(SCORE_COLOR));
 		}
+
 
 		switch (ch)
 		{
@@ -80,14 +83,40 @@ int main(void)
 				break;
 
 			case ' ': //fireeee
+
+				Player1.shoot();
 				break;
 
 			default:
 				break;
 		}
+
 		attron(A_BOLD | A_REVERSE | COLOR_PAIR(PLAYER_COLOR_1));
-		mvprintw(Player1.getY(), Player1.getX(), "P1");
+		mvprintw(Player1.getY(), Player1.getX(), "C");
 		attroff(A_BOLD | A_REVERSE | COLOR_PAIR(PLAYER_COLOR_1));
+
+    mvprintw(Player1.getY(), Player1.getX(), "C");
+		for (int i = 0; i < NUM; i++)
+		{
+			if (enemy[i].getX() == Player1.bullet.getX() && enemy[i].getY() == Player1.bullet.getY()) {
+				mvprintw(enemy[i].getY(), enemy[i].getX(), "X");
+				enemy[i].setX(249 + (rand() %100));
+				enemy[i].setY(rand() % 66);
+				Player1.bullet.setX(250);
+			}
+			else {
+				mvprintw(enemy[i].getY(), enemy[i].getX(), "<");
+				enemy[i].moveLeft();
+				enemy[i].travel();
+			}
+
+		}
+		if (Player1.bullet.getX() > 0 && Player1.bullet.getX() < 250)
+		{
+			Player1.bullet.moveRight();
+			Player1.bullet.travel();
+		}
+		mvprintw(Player1.bullet.getY(), Player1.bullet.getX(), "*");
 
 		if (exit_requested) break ;
 
