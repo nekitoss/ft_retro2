@@ -6,6 +6,7 @@ Ship::Ship() {
 	this->_lives = 3;
 	this->bullet.setSpeed(0.15f);
 	this->bullet.setX(250);
+	this->_score = 0;
 }
 
 Ship::Ship(int x, int y, std::string type) {
@@ -16,6 +17,7 @@ Ship::Ship(int x, int y, std::string type) {
 	this->_lives = 3;
 	this->bullet.setX(250);
 	this->bullet.setSpeed(0.15f);
+	this->_score = 0;
 }
 
 Ship::Ship(Ship const &src) {
@@ -27,9 +29,14 @@ Ship::~Ship() {
 }
 
 int Ship::getLives() { return this->_lives; }
+int Ship::getScore() { return this->_score; }
 
 void Ship::damage() {
 	this->_lives--;
+}
+
+void Ship::kill() {
+	this->_score++;
 }
 
 void Ship::shoot() {

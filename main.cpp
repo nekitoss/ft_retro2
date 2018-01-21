@@ -13,20 +13,14 @@
 
 int main(void)
 {
-  Ship Player1(1,1, "C");
-  int ch;
-  bool exit_requested = false;
+	Ship Player1(1,1, "C");
+  	Enemy enemy[NUM];
+  	int ch;
+ 	bool exit_requested = false;
 	int maxX, maxY;
-  srand(time(nullptr));
-	
-	Enemy enemy[NUM];
-	for (int i = 0; i < NUM; i++)
-	{
-		enemy[i].setX(249 + (rand() %100));
-		enemy[i].setY(rand() % 66);
-		enemy[i].setSpeed(0.005 * (rand() % 8 + 1));
-	}
-  initscr();
+  	srand(time(nullptr));
+
+  	initscr();
 	refresh();
 	start_color();
 	init_pair(ENEMY_COLOR, COLOR_RED, COLOR_BLACK);
@@ -42,19 +36,23 @@ int main(void)
 	noecho();
 	timeout(0); // wtimeout(stdscr, 0);
 
-	while(!exit_requested)
+
+	for (int i = 0; i < NUM; i++)
 	{
+		enemy[i].setX(maxX - 1 + (rand() %100));
+		enemy[i].setY(rand() % maxY);
+		enemy[i].setSpeed(0.005 * (rand() % 8 + 1));
+	}
+
+	while(!exit_requested) {
 		ch = getch();
 		erase();
-		{//draw score
-			attron(A_BOLD | A_REVERSE | COLOR_PAIR(SCORE_COLOR));
-			mvprintw(maxY - 1, maxX / 2 - 6, "SCORE: %d", 4399);
-			attroff(A_BOLD | A_REVERSE | COLOR_PAIR(SCORE_COLOR));
-		}
+		//draw score
+		attron(A_BOLD | A_REVERSE | COLOR_PAIR(SCORE_COLOR));
+		mvprintw(maxY - 1, maxX / 2 - 6, "SCORE: %d", Player1.getScore());
+		attroff(A_BOLD | A_REVERSE | COLOR_PAIR(SCORE_COLOR));
 
-
-		switch (ch)
-		{
+		switch (ch) {
 			case 27:
 			case 'q': //exit
 				exit_requested = true;
@@ -93,52 +91,51 @@ int main(void)
 				break;
 		}
 
-    {//draw player & bullets
-			attron(A_BOLD | A_REVERSE | COLOR_PAIR(PLAYER_COLOR_1));
-			mvprintw(Player1.getY(), Player1.getX(), &Player1.getType()[0]);
-			attroff(A_REVERSE);
-			if (Player1.bullet.getX() > 0 && Player1.bullet.getX() < 250)
-			{
-				Player1.bullet.moveRight();
-				Player1.bullet.travel();
-			}
-			mvprintw(Player1.bullet.getY(), Player1.bullet.getX(), "*");
-			attroff(A_BOLD  | COLOR_PAIR(PLAYER_COLOR_1));
+		//draw player & bullets
+		attron(A_BOLD | COLOR_PAIR(PLAYER_COLOR_1));
+		mvprintw(Player1.getY(), Player1.getX(), "\\");
+		mvprintw(Player1.getY() + 1, Player1.getX(), &Player1.getType()[0]);
+		mvprintw(Player1.getY() + 1, Player1.getX() + 1, "O>");
+		mvprintw(Player1.getY() + 2, Player1.getX(), "/");
+		attroff(A_REVERSE);
+		if (Player1.bullet.getX() > 0 && Player1.bullet.getX() < maxX) {
+			Player1.bullet.moveRight();
+			Player1.bullet.travel();
 		}
+		mvprintw(Player1.bullet.getY(), Player1.bullet.getX(), "*");
+		attroff(A_BOLD | COLOR_PAIR(PLAYER_COLOR_1));
 
-		{//draw enemy
-			attron(A_BOLD | COLOR_PAIR(ENEMY_COLOR));
-			for (int i = 0; i < NUM; i++)
-			{
-        if (enemy[i].getX() == Player1.getX() && enemy[i].getY() == Player1.getY()) {
-          Player1.damage();
-          if (Player1.getLives() <= 0)
-            Player1.setType("X");
-        }
-				if (enemy[i].getX() == Player1.bullet.getX() && enemy[i].getY() == Player1.bullet.getY()) {
-					mvprintw(enemy[i].getY(), enemy[i].getX(), "X");
-					enemy[i].setX(249 + (rand() %100));
-					enemy[i].setY(rand() % 66);
-					Player1.bullet.setX(250);
-				}
-				else {
-					mvprintw(enemy[i].getY(), enemy[i].getX(), "<");
-					enemy[i].moveLeft();
-					enemy[i].travel();
-				}
+
+		//draw enemy
+		attron(A_BOLD | COLOR_PAIR(ENEMY_COLOR));
+		for (int i = 0; i < NUM; i++) {
+			if (enemy[i].getX() == Player1.getX() && (enemy[i].getY() == Player1.getY()
+													  || enemy[i].getY() == Player1.getY() + 1
+													  || enemy[i].getY() == Player1.getY() + 2)) {
+				Player1.damage();
+				enemy[i].setX(maxX - 1 + (rand() % 100));
+				enemy[i].setY(rand() % maxY);
 			}
-			attroff(A_BOLD | COLOR_PAIR(ENEMY_COLOR));
+			if (Player1.getLives() <= 0)
+				Player1.setType("X");
+
+			if (enemy[i].getX() == Player1.bullet.getX() && enemy[i].getY() == Player1.bullet.getY()) {
+				Player1.kill();
+				mvprintw(enemy[i].getY(), enemy[i].getX(), "X");
+				enemy[i].setX(maxX - 1 + (rand() % 100));
+				enemy[i].setY(rand() % maxY);
+				Player1.bullet.setX(maxX);
+			} else {
+				mvprintw(enemy[i].getY(), enemy[i].getX(), "<");
+				enemy[i].moveLeft();
+				enemy[i].travel();
+			}
 		}
-
-		if (exit_requested) break ;
-
-		refresh();
+		attroff(A_BOLD | COLOR_PAIR(ENEMY_COLOR));
+		if (exit_requested)
+			break;
 	}
-
-
-
-
-
+	refresh();
 
 	timeout(-1);
 	getch();
