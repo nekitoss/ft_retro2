@@ -28,7 +28,7 @@ std::string Entity::getType() const { return this->_type; };
 
 
 void Entity::moveUp() { this->_posY++; }
-void Entity::moveDown() { this->_posY; }
+void Entity::moveDown() { this->_posY--; }
 void Entity::moveLeft() { this->_posX--; }
 void Entity::moveRight() { this->_posX++; }
 
