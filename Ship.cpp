@@ -33,7 +33,7 @@ int Ship::getScore() { return this->_score; }
 
 void Ship::resetLives() { this->_lives = 3; }
 void Ship::damage() {
-	if (this->_lives > 1)
+	if (this->_lives > 0)
 		this->_lives--;
 }
 
