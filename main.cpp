@@ -1,9 +1,13 @@
 #include <iostream>
 #include <ncurses.h>
-
+#include "Ship.hpp"
 
 int main(void)
 {
+
+	Ship Player1(1,1, "P");
+
+
 	int ch;
 	bool exit_requested = false;
 
@@ -32,9 +36,11 @@ int main(void)
 
 	while(!exit_requested)
 	{
-
+		clear();
 		ch = getch();
 
+
+		
 
 		switch (ch)
 		{
@@ -46,21 +52,25 @@ int main(void)
 			case KEY_UP: //move up
 			case 'w':
 			case 'i':
+				Player1.moveUp();
 				break;
 
 			case KEY_DOWN: //move down
 			case 's':
 			case 'k':
+				Player1.moveDown();
 				break;
 
 			case KEY_LEFT: //move left
 			case 'a':
 			case 'j':
+				Player1.moveLeft();
 				break;
 
 			case KEY_RIGHT: //move right
 			case 'd':
 			case 'l':
+				Player1.moveRight();
 				break;
 
 			case ' ': //fireeee
@@ -70,6 +80,7 @@ int main(void)
 				break;
 		}
 
+		mvprintw(Player1.getY(), Player1.getX(), "P");
 
 		if (exit_requested) break ;
 
