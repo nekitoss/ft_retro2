@@ -2,6 +2,7 @@
 #pragma once
 
 #include "Entity.hpp"
+#include "bullet.hpp"
 
 class Enemy : public Entity {
 public:
@@ -10,6 +11,8 @@ public:
 	Enemy(Enemy const &src);
 	~Enemy();
 
+	Bullet bullet;
+	void shoot();
 	Enemy &operator=(Enemy const &rhs);
 protected:
 };
