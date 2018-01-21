@@ -26,7 +26,6 @@ int Entity::getY() const { return this->_posY; };
 float Entity::getSpeed() const { return this->_speed; }
 std::string Entity::getType() const { return this->_type; };
 
-
 void Entity::moveUp() { this->_posY++; }
 void Entity::moveDown() { this->_posY--; }
 void Entity::moveLeft() { this->_posX--; }

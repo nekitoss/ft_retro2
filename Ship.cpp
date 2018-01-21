@@ -3,6 +3,7 @@
 
 Ship::Ship() {
 	this->_alive = true;
+	this->_lives = 3;
 }
 
 Ship::Ship(int x, int y, std::string type) {
@@ -10,6 +11,7 @@ Ship::Ship(int x, int y, std::string type) {
 	this->_posY = y;
 	this->_type = type;
 	this->_alive = true;
+	this->_lives = 3;
 }
 
 Ship::Ship(Ship const &src) {
