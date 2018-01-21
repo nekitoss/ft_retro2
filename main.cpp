@@ -149,20 +149,25 @@ int main(void)
 //		time(&current_time);
 		current = static_cast<float>(clock() - timer)/CLOCKS_PER_SEC;
 
-		if (current > 0.5)
-		{
-			flag = true;
-			timer = clock();
-		}
+
 
 		//draw score
 		attron(A_BOLD | A_REVERSE | COLOR_PAIR(SCORE_COLOR));
 		mvprintw(maxY - 1, maxX / 2 - 6, "SCORE: %d", Player1.getScore());
 		mvprintw(maxY - 1, maxX / 2 - 26, "Lives: %d", Player1.getLives());
+//		for (int k = 0; k < NUM; k++)
+//		{
+//			mvprintw(maxY - 1 - k, maxX / 2 - 26, "X: %4d; Y:%4d; Sp:%0.5f XM:%f", enemy[k].getX(), enemy[k].getY(), enemy[k].getSpeed(), enemy[k].getDist());
+//		}
 
 		attroff(A_BOLD | A_REVERSE | COLOR_PAIR(SCORE_COLOR));
 		exit_requested = input(Player1, ch);
-		Player1.shoot();
+		if (current > 0.5)
+		{
+			flag = true;
+			timer = clock();
+			Player1.shoot();
+		}
 		//draw player & bullets
 		attron(A_BOLD | COLOR_PAIR(PLAYER_COLOR_1));
 		mvprintw(Player1.getY(), Player1.getX(), "\\");
