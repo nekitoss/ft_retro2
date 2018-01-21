@@ -37,7 +37,7 @@ void Enemy::moveLeft() {
 }
 
 void Enemy::shoot() {
-	if (this->bullet.getX() < -100 && this->_posX > 0 && this->_posX < this->_dist)
+	if ((this->bullet.getX() < -100 || this->bullet.getX() == this->_maxX) && this->_posX > 0 && this->_posX < this->_maxX)
 	{
 		this->bullet.setX(this->_posX - 1);
 		this->bullet.setY(this->_posY);

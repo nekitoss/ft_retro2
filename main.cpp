@@ -37,13 +37,17 @@ void enemy_block (Ship &Player1, Enemy *enemy, int maxX, int maxY, bool flag) {
 			mvprintw(enemy[i].getY() - 1, enemy[i].getX(), "/");
 			mvprintw(enemy[i].getY(), enemy[i].getX(), "<K");
 			mvprintw(enemy[i].getY() + 1, enemy[i].getX(), "\\");
+			enemy[i].shoot();
+			mvprintw(enemy[i].bullet.getY(), enemy[i].bullet.getX(), "<");
 			if (flag) {
 				enemy[i].moveLeft();
 				enemy[i].travel();
-				flag = false;
+				enemy[i].bullet.moveLeft();
+
 			}
 		}
 	}
+	flag = false;
 }
 
 bool input(Ship &Player1, int ch) {
@@ -132,7 +136,10 @@ int main(void)
 		enemy[i].setMaxY(maxY);
 		enemy[i].setX(maxX - 1 + (rand() %100));
 		enemy[i].setY((rand() % (maxY - 4)) + 1);
-		enemy[i].setSpeed(0.005f * (rand() % 8 + 1));
+		enemy[i].setSpeed(0.001f * (rand() % 8 + 1));
+		enemy[i].bullet.setX(-100);
+		enemy[i].bullet.setSpeed(0.01f);
+		enemy[i].bullet.setDist(0);
 	}
 	timer = clock();
 
@@ -162,7 +169,7 @@ int main(void)
 
 		attroff(A_BOLD | A_REVERSE | COLOR_PAIR(SCORE_COLOR));
 		exit_requested = input(Player1, ch);
-		if (current > 0.5)
+		if (current > 0.2)
 		{
 			flag = true;
 			timer = clock();
