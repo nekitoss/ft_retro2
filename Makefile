@@ -19,8 +19,7 @@ FLAGS = -Wall -Wextra -Werror
 NAME = ft_retro
 
 SRC = main.cpp\
-		Ship.cpp Bullet.cpp Entity.cpp
-		#Asteroid.cpp Enemy.cpp Star.cpp
+		Ship.cpp Bullet.cpp Entity.cpp Asteroid.cpp Enemy.cpp Star.cpp
 
 OBJ = $(SRC:.cpp=.o)
 
