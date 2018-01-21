@@ -1,1 +1,3 @@
 ft_retro
+*.o
+.DS_Store
